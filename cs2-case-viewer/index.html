@@ -29,59 +29,83 @@
     </div>
 
     <script>
-        // Check if the user is on a mobile device
+        // Check if the user is using a mobile browser framework
         const isMobileDevice = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
         if (isMobileDevice) {
             // --- MOBILE ENGINE ---
-            console.log("Mobile device detected. Running proxy mirror bypass...");
+            console.log("Mobile device verified. Loading unpkg stream...");
             
-            const MOBILE_RARITY_MAP = {
-                "Covert": "var(--rarity-covert)", "Classified": "var(--rarity-classified)", 
-                "Restricted": "var(--rarity-restricted)", "Mil-Spec Grade": "var(--rarity-milspec)",
-                "Industrial Grade": "var(--rarity-industrial)", "Consumer Grade": "var(--rarity-consumer)",
-                "Extraordinary": "var(--rarity-covert)"
+            const MOBILE_TIER_MAP = {
+                "rarity_ancient_weapon": "var(--rarity-covert)",
+                "rarity_legendary_weapon": "var(--rarity-classified)",
+                "rarity_mythical_weapon": "var(--rarity-restricted)",
+                "rarity_rare_weapon": "var(--rarity-milspec)",
+                "rarity_uncommon_weapon": "var(--rarity-industrial)",
+                "rarity_common_weapon": "var(--rarity-consumer)",
+                "rarity_ancient": "var(--rarity-covert)" 
             };
+
+            let MOBILE_SKINS_LOOKUP = {};
 
             async function initMobileEngine() {
                 const grid = document.getElementById('case-grid');
                 try {
-                    // Channelling through cors-anywhere proxy mirror to smash the connection block
-                    const targetUrl = 'https://csgobackpack.net/api/v1/containers/list';
-                    const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`);
-                    
-                    if (!res.ok) throw new Error("Proxy server line busy.");
-                    const proxyData = await res.json();
-                    
-                    // Parse out the clean data block from inside the wrapper
-                    const data = JSON.parse(proxyData.contents);
+                    // Fetch directly from unpkg CDN to completely bypass CORS filters on phones
+                    const [cratesResponse, skinsResponse] = await Promise.all([
+                        fetch('https://unpkg.com/csgo-api@1.3.0/public/api/en/crates.json'),
+                        fetch('https://unpkg.com/csgo-api@1.3.0/public/api/en/skins.json')
+                    ]);
+
+                    if (!cratesResponse.ok || !skinsResponse.ok) {
+                        throw new Error("CDN data mirror didn't respond.");
+                    }
+
+                    const crates = await cratesResponse.json();
+                    const skins = await skinsResponse.json();
+
+                    MOBILE_SKINS_LOOKUP = skins.reduce((map, item) => {
+                        if (item && item.id) map[item.id] = item;
+                        return map;
+                    }, {});
+
                     grid.innerHTML = '';
 
-                    Object.keys(data.containers).forEach(key => {
-                        const item = data.containers[key];
-                        if (item.type === "Case" || item.type === "Souvenir Package") {
+                    const containers = crates.filter(c => c && (c.type === 'case' || c.type === 'package'));
+                    
+                    containers.forEach(container => {
+                        if (container && container.image) {
                             const card = document.createElement('div');
                             card.className = 'case-card';
-                            card.innerHTML = `<img src="${item.image}" alt="${item.name}" loading="lazy"><h3>${item.name}</h3>`;
+                            card.innerHTML = `<img src="${container.image}" alt="${container.name}" loading="lazy"><h3>${container.name}</h3>`;
                             
                             card.addEventListener('click', () => {
-                                document.getElementById('modal-case-title').innerText = item.name;
+                                document.getElementById('modal-case-title').innerText = container.name;
                                 const lootGrid = document.getElementById('modal-loot-grid');
                                 lootGrid.innerHTML = '';
 
-                                if (!item.contains || item.contains.length === 0) {
-                                    lootGrid.innerHTML = '<div class="loading-state">Special item rewards container.</div>';
+                                if (!container.contains || container.contains.length === 0) {
+                                    lootGrid.innerHTML = '<div class="loading-state">Special items inside.</div>';
                                 } else {
-                                    item.contains.forEach(skin => {
-                                        const color = MOBILE_RARITY_MAP[skin.rarity] || "var(--text-muted)";
+                                    container.contains.forEach(itemId => {
+                                        const item = MOBILE_SKINS_LOOKUP[itemId];
+                                        if (!item) return;
+
+                                        const color = MOBILE_TIER_MAP[item.rarity?.id] || "var(--text-muted)";
+                                        const rarityName = item.rarity?.name || "Standard";
+                                        
+                                        const nameParts = item.name ? item.name.split(' | ') : ["Unknown"];
+                                        const weaponTitle = nameParts[0] || "";
+                                        const skinSubtitle = nameParts[1] ? `| ${nameParts[1]}` : "";
+
                                         const lootCard = document.createElement('div');
                                         lootCard.className = 'loot-item';
                                         lootCard.style.setProperty('--tier-glow', color);
                                         lootCard.style.borderBottom = `3px solid ${color}`;
                                         lootCard.innerHTML = `
-                                            <img src="${skin.image || ''}" alt="${skin.name}" loading="lazy">
-                                            <div class="rarity-label" style="color: ${color};">${skin.rarity || 'Standard'}</div>
-                                            <div class="weapon-title">${skin.name}</div>
+                                            <img src="${item.image || ''}" alt="${item.name || 'Skin'}" loading="lazy">
+                                            <div class="rarity-label" style="color: ${color};">${rarityName}</div>
+                                            <div class="weapon-title">${weaponTitle}<br><span class="skin-name">${skinSubtitle}</span></div>
                                         `;
                                         lootGrid.appendChild(lootCard);
                                     });
@@ -101,7 +125,7 @@
 
         } else {
             // --- PC ADVANCED MODULAR ENGINE ---
-            // Leave your advanced folder structure untouched for your computer!
+            // Computer detects this, keeping your premium multi-file setup untouched
             console.log("Desktop PC verified. Initiating advanced module grid system...");
             const scriptModule = document.createElement('script');
             scriptModule.type = 'module';

@@ -1,1 +1,18 @@
-/* Add your CSS styles here */
+:root {
+    /* Theme Palettes */
+    --bg-dark-900: #0d0e11;
+    --bg-dark-800: #141519;
+    --bg-dark-700: #1c1d24;
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --text-primary: #f3f4f6;
+    --text-muted: #8b92a4;
+    --accent-gold: #de9b35;
+
+    /* Official Valve Rarity Colors */
+    --rarity-covert: #eb4b4b;
+    --rarity-classified: #d32ce6;
+    --rarity-restricted: #8847ff;
+    --rarity-milspec: #4b69ff;
+    --rarity-industrial: #5e98d9;
+    --rarity-consumer: #b0c3d9;
+}

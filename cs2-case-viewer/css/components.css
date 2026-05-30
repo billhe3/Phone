@@ -1,0 +1,51 @@
+/* Container Grid Layout */
+.case-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 24px;
+    padding: 20px;
+}
+
+/* Premium Item Card */
+.case-card {
+    background: linear-gradient(135deg, var(--bg-dark-800), var(--bg-dark-700));
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.case-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Radiant Glow inside Item Modal Card */
+.loot-item {
+    background: var(--bg-dark-800);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 12px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Dynamic background backdrop to mirror CS2 opening UI */
+.loot-item::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 40%;
+    background: radial-gradient(circle, var(--rarity-color, #fff) 0%, transparent 70%);
+    opacity: 0.15;
+    pointer-events: none;
+}

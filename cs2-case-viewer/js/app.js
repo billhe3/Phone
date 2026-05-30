@@ -23,9 +23,8 @@ async function runtimeEngineInitialization() {
 
     } catch (error) {
         caseGridElement.innerHTML = `
-            <div class="loading-state" style="color: #eb4b4b; padding: 40px; text-align: center; line-height: 1.6;">
-                Engine Pipeline Malfunction:<br>
-                <span style="font-size: 12px; color: #626875;">${error.message}</span>
+            <div class="loading-state" style="color: var(--rarity-covert);">
+                Engine Pipeline Malfunction: ${error.message}
             </div>`;
     }
 }
@@ -36,7 +35,7 @@ function renderDetailedLootViewModal(container) {
     lootGridElement.innerHTML = '';
 
     if (!container.contains || container.contains.length === 0) {
-        lootGridElement.innerHTML = '<div class="loading-state">No items found.</div>';
+        lootGridElement.innerHTML = '<div class="loading-state">Special item rewards registry inside.</div>';
     } else {
         container.contains.forEach(itemId => {
             const item = MASTER_SKINS_LOOKUP[itemId];
@@ -67,7 +66,6 @@ function renderDetailedLootViewModal(container) {
 
     const targetModal = document.getElementById('detail-modal');
     targetModal.classList.add('active');
-    targetModal.setAttribute('aria-hidden', 'false');
 }
 
 function attachModalWindowListeners() {

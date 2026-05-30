@@ -1,51 +1,207 @@
-/* Container Grid Layout */
+body {
+    background-color: var(--bg-dark-900);
+    color: var(--text-primary);
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+.app-header {
+    text-align: center;
+    padding: 40px 20px 20px 20px;
+}
+
+.app-header h1 {
+    font-size: 28px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin: 0;
+    font-weight: 900;
+}
+
+.app-header p {
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 2px;
+    margin: 5px 0 0 0;
+}
+
+/* Primary Main Catalog Grid */
 .case-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 24px;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
     padding: 20px;
 }
 
-/* Premium Item Card */
+.loading-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--text-muted);
+    padding: 60px;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+/* Individual Case Box Styles */
 .case-card {
-    background: linear-gradient(135deg, var(--bg-dark-800), var(--bg-dark-700));
+    background: linear-gradient(180deg, var(--bg-dark-700) 0%, var(--bg-dark-800) 100%);
     border: 1px solid var(--border-subtle);
     border-radius: 12px;
-    padding: 20px;
+    padding: 24px;
     text-align: center;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    position: relative;
-    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.25s, box-shadow 0.25s;
 }
 
 .case-card:hover {
-    transform: translateY(-6px);
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
 }
 
-/* Radiant Glow inside Item Modal Card */
+.case-card img {
+    width: 100%;
+    height: 130px;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4));
+    transition: transform 0.25s;
+}
+
+.case-card:hover img {
+    transform: scale(1.05);
+}
+
+.case-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 16px 0 0 0;
+    color: #e5e7eb;
+}
+
+/* Modal Popup Window Overlay Layout */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(4, 5, 6, 0.85);
+    backdrop-filter: blur(12px);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal-body {
+    background: #0e0f12;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 35px;
+    width: 100%;
+    max-width: 960px;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+}
+
+.modal-header-block {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+}
+
+.modal-header-block .sub-tag {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent-gold);
+    font-weight: 700;
+}
+
+.modal-header-block h2 {
+    margin: 4px 0 0 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 22px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 25px; right: 25px;
+    background: none; border: none;
+    color: var(--text-muted);
+    font-size: 32px; cursor: pointer;
+    line-height: 1; transition: color 0.2s;
+}
+.close-btn:hover { color: #fff; }
+
+/* Dynamic Interior Content Inventory Loot Grid */
+.loot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+}
+
 .loot-item {
-    background: var(--bg-dark-800);
-    border: 1px solid var(--border-subtle);
-    border-radius: 8px;
-    padding: 12px;
+    background: #131419;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    padding: 16px;
     position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    overflow: hidden;
 }
 
-/* Dynamic background backdrop to mirror CS2 opening UI */
+.loot-item img {
+    width: 100%;
+    height: 95px;
+    object-fit: contain;
+    z-index: 2;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
+}
+
+.loot-item .rarity-label {
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 12px;
+    z-index: 2;
+}
+
+.loot-item .weapon-title {
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 4px;
+    line-height: 1.3;
+    z-index: 2;
+}
+
+.loot-item .skin-name {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+/* Ambient Radial Light Glow System backing the weapons */
 .loot-item::before {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: 50%;
+    bottom: -30px; left: 50%;
     transform: translateX(-50%);
-    width: 80%;
-    height: 40%;
-    background: radial-gradient(circle, var(--rarity-color, #fff) 0%, transparent 70%);
-    opacity: 0.15;
+    width: 110%; height: 75%;
+    background: radial-gradient(circle, var(--tier-glow, #fff) 0%, transparent 75%);
+    opacity: 0.12;
     pointer-events: none;
+    z-index: 1;
 }

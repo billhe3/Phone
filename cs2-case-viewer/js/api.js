@@ -1,20 +1,20 @@
 export const CSGOApiService = {
     async fetchProjectAssets() {
         try {
-            // Fetching via unpkg CDN - built for fast, zero-block data distribution
+            // Using the official CORS-enabled API proxy addresses
             const [cratesResponse, skinsResponse] = await Promise.all([
-                fetch('https://unpkg.com/csgo-api@1.3.0/public/api/en/crates.json'),
-                fetch('https://unpkg.com/csgo-api@1.3.0/public/api/en/skins.json')
+                fetch('https://bymykel.github.io/CSGO-API/api/en/crates.json'),
+                fetch('https://bymykel.github.io/CSGO-API/api/en/skins.json')
             ]);
 
             if (!cratesResponse.ok || !skinsResponse.ok) {
-                throw new Error(`CDN Error: ${cratesResponse.status}`);
+                throw new Error(`Data Mirror Error: ${cratesResponse.status}`);
             }
 
             const crates = await cratesResponse.json();
             const skins = await skinsResponse.json();
 
-            // Map data to dictionary for instant O(1) loop retrieval
+            // Safe lookup registry conversion
             const skinsDictionary = skins.reduce((map, item) => {
                 if (item && item.id) {
                     map[item.id] = item;
@@ -23,12 +23,13 @@ export const CSGOApiService = {
             }, {});
 
             return {
+                // Filter down to weapon cases and souvenir packages
                 containers: crates.filter(c => c && (c.type === 'case' || c.type === 'package')),
                 skinsRegistry: skinsDictionary
             };
         } catch (err) {
-            console.error("API Fetch Error:", err);
-            throw err;
+            console.error("API Error caught:", err);
+            throw new Error("CORS Security Block or Request Timeout");
         }
     }
 };

@@ -29,13 +29,12 @@
     </div>
 
     <script>
-        // Detection script: Check if the user is using a mobile browser framework
+        // Check if the user is on a mobile device
         const isMobileDevice = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
         if (isMobileDevice) {
-            // --- MOBILE FALLBACK ENGINE ---
-            // Direct injection to bypass strict browser security modules on phones
-            console.log("Mobile device verified. Loading compatible stream framework...");
+            // --- MOBILE ENGINE ---
+            console.log("Mobile device detected. Running proxy mirror bypass...");
             
             const MOBILE_RARITY_MAP = {
                 "Covert": "var(--rarity-covert)", "Classified": "var(--rarity-classified)", 
@@ -47,9 +46,15 @@
             async function initMobileEngine() {
                 const grid = document.getElementById('case-grid');
                 try {
-                    const res = await fetch('https://csgobackpack.net/api/v1/containers/list');
-                    if (!res.ok) throw new Error("API network line rejected.");
-                    const data = await res.json();
+                    // Channelling through cors-anywhere proxy mirror to smash the connection block
+                    const targetUrl = 'https://csgobackpack.net/api/v1/containers/list';
+                    const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`);
+                    
+                    if (!res.ok) throw new Error("Proxy server line busy.");
+                    const proxyData = await res.json();
+                    
+                    // Parse out the clean data block from inside the wrapper
+                    const data = JSON.parse(proxyData.contents);
                     grid.innerHTML = '';
 
                     Object.keys(data.containers).forEach(key => {
@@ -58,6 +63,7 @@
                             const card = document.createElement('div');
                             card.className = 'case-card';
                             card.innerHTML = `<img src="${item.image}" alt="${item.name}" loading="lazy"><h3>${item.name}</h3>`;
+                            
                             card.addEventListener('click', () => {
                                 document.getElementById('modal-case-title').innerText = item.name;
                                 const lootGrid = document.getElementById('modal-loot-grid');
@@ -95,7 +101,7 @@
 
         } else {
             // --- PC ADVANCED MODULAR ENGINE ---
-            // If on a computer, dynamically inject the high-performance ES6 Module script tags
+            // Leave your advanced folder structure untouched for your computer!
             console.log("Desktop PC verified. Initiating advanced module grid system...");
             const scriptModule = document.createElement('script');
             scriptModule.type = 'module';

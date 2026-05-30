@@ -5,7 +5,7 @@ export const TIER_COLOR_MAP = {
     "rarity_rare_weapon": "var(--rarity-milspec)",
     "rarity_uncommon_weapon": "var(--rarity-industrial)",
     "rarity_common_weapon": "var(--rarity-consumer)",
-    "rarity_ancient": "var(--rarity-covert)" // Rare Special Items (Knives/Gloves)
+    "rarity_ancient": "var(--rarity-covert)" 
 };
 
 export function buildCaseCardNode(container, selectionHandler) {

@@ -28,6 +28,80 @@
         </div>
     </div>
 
-    <script type="module" src="js/app.js"></script>
+    <script>
+        // Detection script: Check if the user is using a mobile browser framework
+        const isMobileDevice = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        if (isMobileDevice) {
+            // --- MOBILE FALLBACK ENGINE ---
+            // Direct injection to bypass strict browser security modules on phones
+            console.log("Mobile device verified. Loading compatible stream framework...");
+            
+            const MOBILE_RARITY_MAP = {
+                "Covert": "var(--rarity-covert)", "Classified": "var(--rarity-classified)", 
+                "Restricted": "var(--rarity-restricted)", "Mil-Spec Grade": "var(--rarity-milspec)",
+                "Industrial Grade": "var(--rarity-industrial)", "Consumer Grade": "var(--rarity-consumer)",
+                "Extraordinary": "var(--rarity-covert)"
+            };
+
+            async function initMobileEngine() {
+                const grid = document.getElementById('case-grid');
+                try {
+                    const res = await fetch('https://csgobackpack.net/api/v1/containers/list');
+                    if (!res.ok) throw new Error("API network line rejected.");
+                    const data = await res.json();
+                    grid.innerHTML = '';
+
+                    Object.keys(data.containers).forEach(key => {
+                        const item = data.containers[key];
+                        if (item.type === "Case" || item.type === "Souvenir Package") {
+                            const card = document.createElement('div');
+                            card.className = 'case-card';
+                            card.innerHTML = `<img src="${item.image}" alt="${item.name}" loading="lazy"><h3>${item.name}</h3>`;
+                            card.addEventListener('click', () => {
+                                document.getElementById('modal-case-title').innerText = item.name;
+                                const lootGrid = document.getElementById('modal-loot-grid');
+                                lootGrid.innerHTML = '';
+
+                                if (!item.contains || item.contains.length === 0) {
+                                    lootGrid.innerHTML = '<div class="loading-state">Special item rewards container.</div>';
+                                } else {
+                                    item.contains.forEach(skin => {
+                                        const color = MOBILE_RARITY_MAP[skin.rarity] || "var(--text-muted)";
+                                        const lootCard = document.createElement('div');
+                                        lootCard.className = 'loot-item';
+                                        lootCard.style.setProperty('--tier-glow', color);
+                                        lootCard.style.borderBottom = `3px solid ${color}`;
+                                        lootCard.innerHTML = `
+                                            <img src="${skin.image || ''}" alt="${skin.name}" loading="lazy">
+                                            <div class="rarity-label" style="color: ${color};">${skin.rarity || 'Standard'}</div>
+                                            <div class="weapon-title">${skin.name}</div>
+                                        `;
+                                        lootGrid.appendChild(lootCard);
+                                    });
+                                }
+                                document.getElementById('detail-modal').classList.add('active');
+                            });
+                            grid.appendChild(card);
+                        }
+                    });
+                } catch (err) {
+                    grid.innerHTML = `<div class="loading-state" style="color: var(--rarity-covert);">Mobile Sync Failure: ${err.message}</div>`;
+                }
+            }
+
+            document.getElementById('close-modal').addEventListener('click', () => document.getElementById('detail-modal').classList.remove('active'));
+            document.addEventListener('DOMContentLoaded', initMobileEngine);
+
+        } else {
+            // --- PC ADVANCED MODULAR ENGINE ---
+            // If on a computer, dynamically inject the high-performance ES6 Module script tags
+            console.log("Desktop PC verified. Initiating advanced module grid system...");
+            const scriptModule = document.createElement('script');
+            scriptModule.type = 'module';
+            scriptModule.src = 'js/app.js';
+            document.body.appendChild(scriptModule);
+        }
+    </script>
 </body>
 </html>
